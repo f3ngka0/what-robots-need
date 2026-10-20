@@ -1,0 +1,185 @@
+/* ============================================================
+   bios.css — 1998 Award / AMI 风格全黑 BIOS 自检界面（0 – 8.88s）
+   目标：黄金前几秒的视觉抓手。全屏接管、像素字、绿色扫描光。
+   z-index 8000：压住桌面与所有窗口，但低于字幕(9000)。
+   ============================================================ */
+
+#bios {
+  position: absolute;
+  inset: 0;
+  z-index: 8000;
+  background: #000;
+  color: #c8c8c8;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  overflow: hidden;
+  display: none;
+}
+
+/* 顶部标识行：左厂牌 / 右能源之星标 */
+.bios-head {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #0000a8;
+  border-bottom: 2px solid #808080;
+}
+.bios-brand {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 2px 2px 0 #000, 0 0 12px rgba(120, 200, 255, 0.7);
+  white-space: nowrap;
+}
+.bios-brand b { color: #55ff55; }
+.bios-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px;
+  background: #000;
+  border: 2px solid #e8c000;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffe000;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.bios-badge .bz {
+  color: #ff3020;
+  text-shadow: 0 0 10px rgba(255, 60, 40, 0.95);
+}
+
+/* 硬件信息块 */
+.bios-meta {
+  position: absolute;
+  left: 20px; top: 66px;
+  font-size: 26px;
+  line-height: 1.42;
+  color: #b8b8b8;
+  letter-spacing: 0.5px;
+}
+.bios-meta .k { color: #6a6a6a; }
+.bios-meta .v { color: #ffffff; }
+.bios-meta .hot { color: #ff4040; }
+
+/* 自检日志 */
+.bios-log {
+  position: absolute;
+  left: 20px; top: 306px;
+  right: 20px;
+  font-size: 26px;
+  line-height: 1.55;
+  color: #a8a8a8;
+  white-space: pre;
+}
+.bios-log div { min-height: 40px; }
+.bios-log .ok { color: #55ff55; }
+.bios-log .warn { color: #ffe000; }
+.bios-log .bad { color: #ff3020; font-weight: bold; }
+.bios-log .dim { color: #6a6a6a; }
+/* 打字机光标：块状闪烁 */
+.bios-log .cursor {
+  display: inline-block;
+  width: 14px; height: 26px;
+  background: #c8c8c8;
+  vertical-align: -4px;
+}
+
+/* 内存地图：填补下半屏 */
+.bios-mem {
+  position: absolute;
+  left: 20px; right: 20px; bottom: 76px;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+}
+.bios-mem .mem-title {
+  font-size: 24px;
+  color: #6a8ac8;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.bios-mem .mem-bar {
+  display: flex;
+  gap: 3px;
+  height: 26px;
+}
+.bios-mem .mem-bar i {
+  flex: 1 1 auto;
+  background: #1a1a1a;
+  box-shadow: inset 0 0 0 1px #333;
+}
+.bios-mem .mem-bar i.on {
+  background: #28d048;
+  box-shadow: 0 0 8px rgba(60, 255, 100, 0.7);
+}
+.bios-mem .mem-legend {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 8px;
+  font-size: 24px;
+  color: #a8a8a8;
+}
+.bios-mem .mem-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.bios-mem .mem-legend b {
+  display: inline-block;
+  width: 18px; height: 18px;
+}
+.bios-mem .lg1 { background: #28d048; }
+.bios-mem .lg2 { background: #e8c000; }
+.bios-mem .lg3 { background: #d04030; }
+.bios-mem .lg4 { background: #6a8ac8; }
+.bios-mem .mem-pct {
+  margin-left: auto;
+  color: #55ff55;
+  font-weight: bold;
+}
+
+/* 底部提示条 */
+.bios-foot {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #0000a8;
+  border-top: 2px solid #808080;
+  font-size: 26px;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+.bios-foot .press { margin-left: auto; color: #ffe000; font-weight: bold; }
+
+/* 扫描光带：让静态黑屏也有生命 */
+.bios-scan {
+  position: absolute; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(180deg,
+    rgba(80, 255, 120, 0) 0%,
+    rgba(80, 255, 120, 0.10) 45%,
+    rgba(180, 255, 200, 0.16) 50%,
+    rgba(80, 255, 120, 0.10) 55%,
+    rgba(80, 255, 120, 0) 100%);
+  pointer-events: none;
+}
+/* CRT 扫描线 */
+.bios-lines {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.55) 0px, rgba(0, 0, 0, 0.55) 2px,
+    transparent 2px, transparent 4px);
+}
+
+/* 末尾：CRT 消磁白闪 */
+.bios-flash {
+  position: absolute; inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+}

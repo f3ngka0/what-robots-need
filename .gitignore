@@ -1,0 +1,18 @@
+# 依赖 / 中间件
+node_modules/
+package-lock.json.bak
+
+# 渲染中间产物：逐帧序列、日志、断点进度
+frames/
+logs/
+out/
+*.mp4
+progress.json
+
+# 临时调试截图
+tools/_art2.png
+
+# 系统垃圾
+Thumbs.db
+desktop.ini
+.DS_Store

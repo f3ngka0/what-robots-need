@@ -1,0 +1,480 @@
+/* ============================================================
+   scenes.css — 各幕专用布局（组件皮肤在 win98.css）
+   ============================================================ */
+
+/* ---------- 场景根 ---------- */
+.scene { position: absolute; inset: 0; overflow: hidden; }
+.scene[data-hidden] { display: none; }
+
+/* ============================================================
+   第一幕：画图板
+   ============================================================ */
+.win98-window--paint .win-body { padding: 0; }
+.paint-layout { display: flex; height: 100%; gap: 0; }
+.paint-tools {
+  width: 56px; flex: 0 0 56px;
+  background: #c0c0c0;
+  border-right: 1px solid #808080;
+  padding: 3px 2px;
+}
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
+.tool-cell {
+  height: 24px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1;
+  background: #c0c0c0;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff;
+  cursor: default;
+  color: #000;
+}
+.tool-cell.is-on {
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+  background: #b0b0b0;
+}
+
+.paint-canvas-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #c0c0c0; padding: 2px; }
+.paint-canvas {
+  flex: 1; position: relative; overflow: hidden;
+  background: #808080;
+  margin: 1px;
+}
+.paint-canvas canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.paint-marquee {
+  position: absolute; inset: 12px;
+  border: 1px dashed #000080;
+  display: none;
+  box-shadow: 0 0 0 1px #fff inset;
+}
+
+.paint-palette {
+  display: flex; align-items: center; gap: 4px;
+  height: 40px; padding: 3px;
+  background: #c0c0c0;
+  border-top: 1px solid #808080;
+}
+.palette-cells { display: grid; grid-template-columns: repeat(14, 16px); grid-auto-rows: 16px; gap: 1px; }
+.palette-cells i {
+  display: block; width: 16px; height: 16px;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
+}
+.palette-current { position: relative; width: 46px; height: 36px; flex: 0 0 46px; }
+.pc-fg {
+  position: absolute; left: 2px; top: 0; width: 28px; height: 26px;
+  background: #000; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff;
+}
+.pc-bg {
+  position: absolute; left: 14px; top: 10px; width: 28px; height: 26px;
+  background: #fff; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff;
+}
+
+/* notepad */
+.win98-window--notepad .win-body { padding: 2px; }
+.notepad-text {
+  margin: 0; padding: 5px 6px;
+  height: 100%; width: 100%;
+  background: #ffffff; color: #000;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 15px; line-height: 20px;
+  white-space: pre-wrap; word-break: break-word;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  overflow: hidden;
+}
+.notepad-text.caret::after {
+  content: '▌';
+  animation: caret-blink 1s steps(1) infinite;
+  color: #000;
+}
+@keyframes caret-blink { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+
+/* sound recorder */
+.a1-sndrec .win-body { padding: 3px; }
+.sndrec-body { display: flex; flex-direction: column; gap: 4px; }
+.sndrec-wave {
+  background: #000; padding: 2px;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.sndrec-wave canvas { display: block; width: 100%; height: 44px; }
+.sndrec-btns { display: flex; gap: 3px; }
+.snd-btn { flex: 1; min-width: 0; height: 20px; font-size: 10px; }
+
+/* ============================================================
+   第二幕：女巫入侵
+   ============================================================ */
+.a2-grid, .a3-rain, .a4-pigs, .a3-razor, .a3-shatter,
+.a4-trash, .a5-cascade, .a5-peel, .a5-melt, .a5-freeze {
+  position: absolute; inset: 0; width: 1920px; height: 1080px;
+  pointer-events: none;
+}
+.a2-grid  { z-index: 40; }
+.a2-money { position: absolute; inset: 0; z-index: 95; pointer-events: none; }
+.a3-rain  { z-index: 60; }
+.a3-dom   { position: absolute; inset: 0; z-index: 100; }
+.a3-razor { z-index: 115; }
+.a3-shatter { z-index: 118; }
+.a4-pigs  { z-index: 45; }
+.a4-humans { position: absolute; inset: 0; z-index: 40; }
+.a4-trash { z-index: 50; }
+.a5-freeze { z-index: 130; }
+.a5-cascade { z-index: 145; }
+.a5-peel { z-index: 146; }
+
+/* 变黑潮 : 标题 */
+.is-hacked .titlebar { animation: tb-hack 0.22s steps(2) infinite; }
+@keyframes tb-hack {
+  0%   { filter: hue-rotate(0deg) saturate(1.6); }
+  50%  { filter: hue-rotate(60deg) saturate(2.2) invert(0.12); }
+  100% { filter: hue-rotate(-40deg) saturate(1.8); }
+}
+
+/* DOS 窗口 */
+.win98-window--dos .win-body { padding: 0; background: #000; }
+.dos-text {
+  margin: 0; padding: 4px 6px;
+  height: 100%; width: 100%;
+  background: #000; color: #c0c0c0;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 12px; line-height: 13px;
+  white-space: pre; overflow: hidden;
+  text-shadow: 0 0 1px rgba(0,255,0,0.35);
+}
+
+/* 抉择框 */
+.dlg-body { padding: 12px 14px 10px; }
+.dlg-row { display: flex; gap: 12px; align-items: flex-start; }
+.dlg-icon { width: 32px; height: 32px; flex: 0 0 32px; image-rendering: pixelated; }
+.dlg-text { font-size: 11px; line-height: 16px; flex: 1; }
+.dlg-song {
+  margin: 10px 0 0; padding: 6px 8px;
+  background: #ffffe1; border: 1px solid #808080;
+  font-size: 11px; color: #000080; font-style: italic;
+}
+.dlg-btns { display: flex; gap: 6px; justify-content: flex-end; margin-top: 12px; }
+.dlg-btns .btn98 { min-width: 92px; }
+
+/* 破框的印钞按钮 */
+#btnMoney {
+  position: absolute; left: 50%; bottom: -74px;
+  transform: translateX(-50%);
+  width: 640px; height: 68px;
+  background: linear-gradient(180deg, #fff200 0%, #ffb300 45%, #ff8a00 100%);
+  color: #7a0020;
+  font: bold 15px Tahoma, 'MS Sans Serif', sans-serif;
+  line-height: 20px;
+  border: 0;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, 0 0 20px #ffd700, 0 0 50px #ff00aa;
+  cursor: pointer;
+  z-index: 5;
+  transition: none;
+}
+#btnMoney .money-sub { font-size: 11px; font-weight: normal; color: #800040; }
+
+/* ============================================================
+   第三幕：弹窗风暴
+   ============================================================ */
+.cp-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; height: 100%; }
+.cp-hint { font-size: 11px; line-height: 15px; padding: 4px 6px; background: #ffffe1; border: 1px solid #808080; }
+.cp-list {
+  flex: 1; background: #fff; overflow: hidden;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.cp-list .listview { height: 100%; }
+.cp-btns { display: flex; gap: 6px; justify-content: flex-end; }
+
+.wizard-banner {
+  position: absolute; left: 0; top: 21px; bottom: 0; width: 0;
+}
+.win98-window--lover .win-body { background: #ffe0f4; }
+
+/* 第三幕主角弹窗：新的 FATAL ERROR 框（冲击力最强）。
+   旧版 .hero-lyric/.hero-note 规则保留给其它可能引用，但主角已换新结构。 */
+.a3-hero { z-index: 130; }
+/* 呼吸红光：JS 每帧写 --fatal-glow（0..1），这里只做插值 */
+.a3-hero::before { opacity: calc(var(--fatal-glow, 0.7) * 0.9); }
+/* 主角窗不用 .win-body 结构，取消通用内边距影响 */
+.a3-hero .fatal-body { flex: 1 1 auto; min-height: 0; }
+.hero-lyric {
+  display: inline-block;
+  font: bold 19px 'Fixedsys', 'Courier New', monospace;
+  line-height: 26px;
+  color: #000080;
+  background: #ffffe1;
+  padding: 3px 8px;
+  border: 1px solid #808080;
+}
+.hero-note {
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 10px; color: #c00000; letter-spacing: 1px;
+}
+
+/* ============================================================
+   第四幕：碎片 / 野猪
+   ============================================================ */
+.defrag-body { padding: 8px; display: flex; flex-direction: column; gap: 6px; height: 100%; }
+.defrag-top { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.defrag-stat { margin-left: auto; color: #000080; font-weight: bold; }
+.defrag-legend { display: flex; gap: 12px; font-size: 10px; }
+.defrag-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.lg { display: inline-block; width: 10px; height: 10px; border: 1px solid #000; }
+.lg-used { background: #0000c8; }
+.lg-unused { background: #fff; }
+.lg-reading { background: #00a0ff; }
+.lg-writing { background: #00e000; }
+.lg-bad { background: #ff0000; }
+.defrag-grid {
+  flex: 1; background: #000; padding: 2px;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.defrag-grid canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.defrag-btns { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* 注册表 */
+.regedit {
+  height: 100%; background: #fff; padding: 4px;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif; font-size: 11px; line-height: 16px;
+  overflow: hidden;
+}
+.reg-root { font-weight: bold; }
+.reg-l1 { padding-left: 14px; }
+.reg-val { padding-left: 28px; color: #222; }
+.reg-arc { background: #000; color: #00ff00; padding: 0 2px; }
+.reg-bad { color: #c00000; font-weight: bold; }
+.reg-err { color: #c00000; font-weight: bold; padding-left: 14px; }
+
+/* 速度表 */
+.a4-speedo {
+  position: absolute; right: 60px; top: 40px;
+  width: 300px; height: 250px; z-index: 60;
+  background: #c0c0c0; padding: 8px;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #ffffff;
+  display: flex; flex-direction: column; align-items: center;
+}
+.speedo-face {
+  position: relative; width: 210px; height: 118px; overflow: hidden;
+  background: #000;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.speedo-dial {
+  position: absolute; left: 50%; top: 100%;
+  width: 190px; height: 190px; margin: -95px 0 0 -95px;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 180deg, #00ff41 0deg 40deg, #ffe000 40deg 90deg, #ff3000 90deg 180deg, transparent 180deg);
+  mask: radial-gradient(circle, transparent 58%, #000 59%);
+  -webkit-mask: radial-gradient(circle, transparent 58%, #000 59%);
+  opacity: .85;
+}
+.speedo-needle {
+  position: absolute; left: 50%; top: 100%;
+  width: 4px; height: 88px; margin-left: -2px;
+  background: #ff3000;
+  transform-origin: 50% 100%;
+  transform: rotate(-120deg);
+  box-shadow: 0 0 6px #ff3000;
+  z-index: 2;
+}
+.speedo-val { font: bold 30px 'Fixedsys', monospace; color: #ff3000; margin-top: 4px; line-height: 1; }
+.speedo-unit { font-size: 11px; color: #000; letter-spacing: 2px; }
+.speedo-tag { margin-top: 6px; font-size: 10px; color: #000080; }
+
+/* 硬件向导 */
+.wiz-body { padding: 0; position: relative; height: 100%; }
+.wiz-head { font-weight: bold; font-size: 12px; padding: 8px 12px 6px; position: relative; z-index: 2; }
+.win98-window--wizard .wizard-banner {
+  position: absolute; left: 0; top: 40px; bottom: 0; width: 100%;
+  background: linear-gradient(90deg, rgba(0,0,128,0.95) 0%, rgba(16,132,208,0.92) 55%, rgba(16,132,208,0) 100%);
+  opacity: .18;
+}
+.wiz-text { padding: 10px 16px; font-size: 11px; line-height: 17px; position: relative; z-index: 2; }
+.wiz-sub { color: #800000; }
+.wiz-prog { padding: 8px 16px; position: relative; z-index: 2; }
+.win98-window--wizard .dlg-btns { padding: 0 16px 12px; }
+
+/* ============================================================
+   第五幕：审判
+   ============================================================ */
+.a5-bsod {
+  position: absolute; inset: 0; z-index: 135;
+  background: #0000aa; color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+}
+.bsod-inner { width: 1080px; padding: 0; }
+.bsod-title { text-align: center; margin-bottom: 34px; }
+.bsod-title span {
+  display: inline-block;
+  background: #aaaaaa; color: #0000aa;
+  font: bold 24px 'Tahoma', 'MS Sans Serif', sans-serif;
+  padding: 1px 28px 2px;
+  letter-spacing: 0;
+}
+.bsod-text {
+  white-space: pre-wrap; font-size: 16px; line-height: 23px;
+  text-shadow: 1px 1px 0 #000;
+  min-height: 190px;
+}
+.bsod-foot { margin-top: 40px; white-space: pre-wrap; font-size: 14px; line-height: 21px; color: #e8e8ff; }
+
+/* Help */
+.help-body { display: flex; flex-direction: column; height: 100%; }
+.help-toolbar { display: flex; gap: 4px; padding: 3px; background: #c0c0c0; border-bottom: 1px solid #808080; }
+.help-pane {
+  flex: 1; background: #fff; padding: 14px 18px; overflow: hidden;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  margin: 3px;
+}
+.help-head { font: bold 20px 'Tahoma', sans-serif; color: #000080; margin-bottom: 14px; }
+.help-search { font-size: 12px; color: #555; margin-bottom: 8px; }
+.help-prog { margin-bottom: 14px; }
+.help-log { font-family: 'Fixedsys', 'Courier New', monospace; font-size: 13px; line-height: 18px; color: #006000; white-space: pre-wrap; }
+
+/* 两窗口隔离 */
+.a5-isol { position: absolute; inset: 0; z-index: 136; }
+.iso-win {
+  position: absolute; top: 250px; width: 620px; height: 480px;
+  background: #c0c0c0;
+  border: 6px solid #808080;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf;
+  overflow: hidden;
+  transition: none;
+}
+.iso-a { left: 40px; }
+.iso-b { left: 1260px; }
+.iso-title {
+  height: 22px; line-height: 22px; padding: 0 8px;
+  background: #000080; color: #fff;
+  font: bold 12px 'Tahoma', sans-serif;
+  white-space: nowrap; overflow: hidden;
+}
+.iso-body { height: calc(100% - 22px); background: #ffffff; position: relative; overflow: hidden; }
+.iso-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 18px;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,128,0.05) 0 1px, transparent 1px 3px),
+    #ffffff;
+}
+.iso-ico canvas { width: 84px; height: 84px; image-rendering: pixelated; }
+.iso-label {
+  font: bold 20px 'Fixedsys', 'Courier New', monospace;
+  color: #000080; letter-spacing: 3px;
+}
+.iso-sub {
+  font: 14px 'Fixedsys', 'Courier New', monospace;
+  color: #8a8a8a; letter-spacing: 1px;
+}
+
+/* 源码自杀 */
+.win98-window--source .win-body { padding: 2px; position: relative; }
+.source-text {
+  margin: 0; padding: 6px 8px; height: 100%; overflow: hidden;
+  background: #fff; color: #000;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 12px; line-height: 15px;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.src-line { display: block; white-space: pre; }
+.src-line.is-key { color: #000080; }
+.sel-box {
+  position: absolute; left: 4px; right: 4px; height: 20px;
+  background: #000080; opacity: .6; mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.fmt-body { padding: 12px 14px; }
+.fmt-head { font-size: 11px; margin-bottom: 8px; }
+.fmt-pct { font: bold 26px 'Fixedsys', monospace; color: #c00000; margin-bottom: 8px; }
+.fmt-prog { margin-bottom: 10px; }
+.fmt-note { font-size: 10px; line-height: 14px; color: #800000; }
+.fmt-btns { display: flex; gap: 6px; justify-content: flex-end; margin-top: 12px; }
+
+/* DOS 实模式 */
+.a5-dos {
+  position: absolute; inset: 0; z-index: 160;
+  background: #000;
+  display: none; align-items: center; justify-content: center;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  color: #ffb000; font-size: 30px; letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(255,176,0,0.85), 0 0 24px rgba(255,120,0,0.45);
+}
+.a5-dos .dos-line { display: flex; gap: 8px; }
+#dosCursor { animation: none; }
+
+/* CRT 断电 */
+.a5-crtoff {
+  position: absolute; inset: 0; z-index: 9996; display: none;
+  background: #000;
+}
+.crtoff-h {
+  position: absolute; left: 0; right: 0; top: 50%; height: 100vh;
+  margin-top: -50vh;
+  background: #fff;
+  transform-origin: 50% 50%;
+}
+.crtoff-dot {
+  position: absolute; left: 50%; top: 50%;
+  width: 420px; height: 420px; margin: -210px 0 0 -210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #dff 18%, rgba(180,240,255,0.5) 40%, rgba(255,255,255,0) 68%);
+  opacity: 0;
+}
+
+/* ---------- 播放门 ---------- */
+.play-gate {
+  position: absolute; inset: 0; z-index: 9900;
+  background: #008080;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.play-outer {
+  background: #c0c0c0; padding: 3px;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #ffffff;
+}
+.play-inner {
+  background: #c0c0c0; padding: 30px 60px 26px; text-align: center;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+}
+.play-title { font: bold 22px 'Fixedsys', monospace; color: #000080; letter-spacing: 3px; margin-bottom: 10px; }
+.play-sub { font-size: 13px; color: #000; letter-spacing: 2px; }
+.play-sub2 { font-size: 11px; color: #444; margin: 14px 0 18px; }
+.play-note { font-size: 10px; color: #666; margin-top: 14px; }
+.play-btn { width: 220px; height: 30px; font-weight: bold; letter-spacing: 2px; }
+
+/* ---------- 数据驱动的全局钩子 ---------- */
+/* ---------- 数据驱动的全局钩子：CSS 被删掉后的赤裸 HTML ---------- */
+html[data-skin="stripped"] * {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+html[data-skin="stripped"] .win98-window {
+  background: #ffffff !important;
+  border: 1px solid #000 !important;
+  padding: 1px;
+}
+html[data-skin="stripped"] .titlebar {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  font-weight: normal !important;
+  border-bottom: 1px solid #000;
+}
+html[data-skin="stripped"] .tb-btn {
+  border: 1px solid #000; background: #fff; color: #000;
+}
+html[data-skin="stripped"] .btn98 {
+  border: 1px solid #000; background: #e8e8e8; color: #000;
+}
+html[data-skin="stripped"] .statusbar { border-top: 1px solid #000; }
+html[data-skin="stripped"] .status-cell { border: 1px solid #000; }
+html[data-skin="stripped"] .menubar { border-bottom: 1px solid #000; background: #e8e8e8; }
+html[data-skin="stripped"] .taskbar {
+  background: #e8e8e8; border-top: 1px solid #000;
+}
+html[data-skin="stripped"] .start-btn,
+html[data-skin="stripped"] .task-btn { border: 1px solid #000; background: #e8e8e8; }
+html[data-skin="stripped"] .desk-icon__glyph { filter: grayscale(1); }
+html[data-skin="stripped"] .desk-icon__label { color: #000; text-shadow: none; }
+html[data-skin="stripped"] .progress98__fill { background: #000080; }
+html[data-skin="stripped"] .tray { border: 1px solid #000; }
+html[data-skin="stripped"] .notepad-text,
+html[data-skin="stripped"] .source-text { border: 1px solid #000; }

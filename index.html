@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-skin="win98" data-mood="classic">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WHAT ROBOTS NEED — Win98 System Hijack</title>
+<link rel="stylesheet" href="css/win98.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/bios.css">
+<link rel="stylesheet" href="css/act1.css">
+<link rel="stylesheet" href="css/subtitle.css">
+<link rel="stylesheet" href="css/scenes.css">
+<link rel="stylesheet" href="css/act4.css">
+</head>
+<body>
+<div id="stage">
+  <!-- #screen 是唯一允许抖动的层；字幕条在它外面 -->
+  <div id="screen">
+    <canvas id="world" width="1920" height="1080"></canvas>
+    <div id="desktop" class="layer"></div>
+    <canvas id="ghost" width="1920" height="1080"></canvas>
+    <div id="scenes" class="layer"></div>
+    <canvas id="fx" width="1920" height="1080"></canvas>
+    <canvas id="shock" width="1920" height="1080"></canvas>
+    <div id="cursor"></div>
+  </div>
+
+  <div id="subtitle"></div>
+
+  <div id="boot"></div>
+  <div id="shutdown"></div>
+  <div id="terminator"></div>
+
+  <div id="taskbar" class="taskbar">
+    <button class="start-btn" id="startBtn"><span class="start-flag">❖</span> <b>Start</b></button>
+    <div class="taskbar-div"></div>
+    <div id="taskbtns" class="taskbtns"></div>
+    <div class="tray" id="tray">
+      <div class="tray-icons" id="trayIcons"></div>
+      <div class="tray-clock" id="trayClock">00:00:00</div>
+    </div>
+  </div>
+
+  <div id="startMenu" class="start-menu" style="display:none"></div>
+
+  <div id="crt" style="display:none"></div>
+  <div id="crtScan" class="crt-scan" style="display:none"></div>
+  <div id="crtVignette" class="crt-vignette" style="display:none"></div>
+  <div id="flash"></div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/data.js"></script>
+<script src="js/beats.js"></script>
+<script src="js/keywords.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/art.js"></script>
+<script src="js/art2.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/windows.js"></script>
+<script src="js/world.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/shock.js"></script>
+<script src="js/bios.js"></script>
+<script src="js/app.js"></script>
+<script src="js/subtitle.js"></script>
+<script src="js/act1.js"></script>
+<script src="js/act2.js"></script>
+<script src="js/act3.js"></script>
+<script src="js/act4.js"></script>
+<script src="js/act5.js"></script>
+</body>
+</html>

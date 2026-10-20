@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ART2 primitive demo — 1920x1080</title>
+<style>
+  html,body{margin:0;padding:0;background:#08060c;overflow:hidden}
+  canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="cv" width="1920" height="1080"></canvas>
+<script src="../js/core.js"></script>
+<script src="../js/art.js"></script>
+<script src="../js/world.js"></script>
+<script src="../js/art2.js"></script>
+<script>
+(function () {
+  'use strict';
+  var cv = document.getElementById('cv');
+  var ctx = cv.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  var hud = { lines: [] };
+
+  function panel(x, y, w, h, title) {
+    // Win98-ish bevel frame for the demo only (not part of ART)
+    ctx.fillStyle = '#1a1426'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#3a2f4f'; ctx.fillRect(x, y, w, 2); ctx.fillRect(x, y, 2, h);
+    ctx.fillStyle = '#0d0a14'; ctx.fillRect(x, y + h - 2, w, 2); ctx.fillRect(x + w - 2, y, 2, h);
+    ART.pixelText(ctx, title, x + 10, y + 9, 2, '#8affd8', { shadow: '#000000' });
+  }
+  function label(x, y, txt, col) {
+    ART.pixelText(ctx, txt, x, y, 2, col || '#b09ad0');
+  }
+
+  function render(t) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.imageSmoothingEnabled = false;
+
+    /* backdrop */
+    var bg = ctx.createLinearGradient(0, 0, 0, 1080);
+    bg.addColorStop(0, '#0a0714');
+    bg.addColorStop(0.55, '#180a26');
+    bg.addColorStop(1, '#2a0a2e');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, 1920, 1080);
+    // faint grid so pixel edges are judgeable
+    ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var gx = 0; gx <= 1920; gx += 60) { ctx.moveTo(gx + 0.5, 0); ctx.lineTo(gx + 0.5, 1080); }
+    for (var gy = 0; gy <= 1080; gy += 60) { ctx.moveTo(0, gy + 0.5); ctx.lineTo(1920, gy + 0.5); }
+    ctx.stroke();
+
+    /* header */
+    ART.pixelText(ctx, 'ART2  ADDITIVE PRIMITIVES', 40, 30, 4, '#ff2a8d', { shadow: '#3a0030' });
+    ART.pixelText(ctx, 't=' + t.toFixed(2), 40, 72, 2, '#8affd8');
+    ART.pixelText(ctx, 'LOADED AFTER ART.JS  /  NO OVERRIDES', 320, 72, 2, '#6a5a88');
+
+    /* ---------- A: princess hand holding a pencil ---------- */
+    panel(40, 110, 620, 330, 'PRINCESSHAND  ANGLES');
+    var angles = [-0.62, -0.16, 0.34, 0.86];
+    for (var i = 0; i < angles.length; i++) {
+      var hx = 130 + i * 145, hy = 250;
+      ART.princessHand(ctx, hx, hy, 132, angles[i], { tremor: 1 });
+      label(hx - 34, 372, 'A=' + angles[i].toFixed(2), '#7a6a9a');
+    }
+    // a bigger hero hand, with the sleeve
+    ART.princessHand(ctx, 520, 268, 190, -0.32, {});
+    label(470, 400, 'HERO 190PX', '#8affd8');
+
+    /* ---------- B: spray gun ---------- */
+    panel(680, 110, 560, 330, 'SPRAYDOTS  AIRBRUSH');
+    ART.sprayDots(ctx, 880, 250, 130, 900, 11, '#ff2a8d', { cell: 4, size: 1, falloff: 1.6 });
+    ART.sprayDots(ctx, 880, 250, 120, 500, 12, '#00e5ff', { cell: 4, size: 1, falloff: 2.2, ring: 0.6 });
+    ART.sprayDots(ctx, 880, 250, 60, 260, 13, '#ffe066', { cell: 4, size: 1, falloff: 2.6 });
+    ART.sprayDots(ctx, 1060, 235, 34, 300, 14, '#f8c090', { cell: 3, size: 1, squash: 0.7, falloff: 1.4 });
+    ART.sprayDots(ctx, 1060, 235, 100, 220, 15, '#8a5cff', { cell: 3, size: 1, ring: 1, falloff: 2.4, alpha: 0.7 });
+    label(760, 396, 'HALO + CORE + WARM', '#7a6a9a');
+    label(700, 422, 'seeded: same n => same pixels', '#5a4a78');
+
+    /* ---------- C: burning skull bust ---------- */
+    panel(1260, 110, 620, 450, 'WIREDAVIDSKULL  RED-EYE');
+    ctx.save();
+    ctx.beginPath(); ctx.rect(1260, 132, 620, 386); ctx.clip();
+    ART.wireDavidSkull(ctx, 1570, 342, 232, t, {});
+    ctx.restore();
+    label(1280, 528, 'PROFILE-REVOLVE  /  EMBER FIELD', '#7a6a9a');
+
+    /* ---------- D: voodoo card ---------- */
+    panel(40, 460, 620, 300, 'VOODOOCARD  3DFX PCI  SPIN');
+    ART.voodooCard(ctx, 120, 486, 300, 250, t, { rpm: 420 });
+    ART.pixelText(ctx, '3DFX', 450, 520, 12, '#00ff9c', { shadow: '#003a20' });
+    ART.pixelText(ctx, 'VOODOO', 450, 626, 6, '#7fe8ff');
+    ART.pixelText(ctx, 'PCI  SPIN 420RPM', 450, 686, 2, '#ff00aa');
+    label(60, 738, 'EDGE CONNECTOR + GPU + RAM + CAPS', '#7a6a9a');
+
+    /* ---------- E: BSOD crop ---------- */
+    panel(680, 460, 560, 300, 'BSODCROP');
+    ART.bsodCrop(ctx, 700, 486, 520, 250, { scale: 2, seed: 1998, t: t });
+
+    /* ---------- F: stock ticker ---------- */
+    panel(1260, 580, 620, 180, 'STOCKTICKER');
+    ART.stockTicker(ctx, 1276, 612, 588, 88, t, 42, { scale: 2 });
+    ART.stockTicker(ctx, 1276, 708, 588, 40, t * 1.6, 77, { scale: 1 });
+    label(1276, 752, 'SCROLL + SPARKLINE', '#7a6a9a');
+
+    /* ---------- G: neon ---------- */
+    panel(40, 780, 620, 270, 'NEONSIGN');
+    ART.neonSign(ctx, 350, 900, 'OPEN 24H', 7, t, { color: '#ff2a8d', align: 'center' });
+    ART.neonSign(ctx, 350, 1000, 'SYS ERROR', 4, t * 1.3, { color: '#00e5ff', align: 'center', core: '#e0ffff' });
+
+    /* ---------- H: glyph atlas ---------- */
+    panel(680, 780, 1200, 270, 'PIXELTEXT  5X7  NO WEB FONTS');
+    var samples = [
+      ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 3],
+      ['0123456789  $%#@&*()[]{}<>', 3],
+      ['THE PRINCESS IS A FILE.PNG', 2],
+      ['> C:\\PIGS\\SCULPT.EXE  READY', 2]
+    ];
+    for (var s = 0; s < samples.length; s++) {
+      ART.pixelText(ctx, samples[s][0], 700, 812 + s * 42, samples[s][1], s % 2 ? '#8affd8' : '#ffe066', { shadow: '#000' });
+    }
+    ART.pixelText(ctx, 'OUTLINE + SHADOW', 700, 992, 3, '#ff2a8d', { outline: '#000000', shadow: '#400020' });
+    ART.pixelText(ctx, '300+ PX PERF TEST', 1180, 992, 2, '#7fe8ff');
+
+    /* ---------- perf readout ---------- */
+    if (window.__PERF__) {
+      ART.pixelText(ctx, window.__PERF__, 1180, 1030, 2, '#00ff66');
+    }
+  }
+
+  /* ---------- perf probe (real numbers for the report) ---------- */
+  function bench() {
+    var b = {};
+    var c = document.createElement('canvas'); c.width = 1920; c.height = 1080;
+    var g = c.getContext('2d');
+    var i, n = 20;
+
+    // princessHand
+    var t0 = performance.now();
+    for (i = 0; i < 200; i++) ART.princessHand(g, 960, 540, 300, i * 0.01, {});
+    b.princessHand = (performance.now() - t0) / 200;
+
+    // sprayDots @ 1500 dots
+    t0 = performance.now();
+    for (i = 0; i < 100; i++) ART.sprayDots(g, 960, 540, 200, 1500, i + 1, '#ff00aa', { cell: 4 });
+    b.sprayDots1500 = (performance.now() - t0) / 100;
+
+    // skull bust
+    t0 = performance.now();
+    for (i = 0; i < n; i++) ART.wireDavidSkull(g, 960, 540, 500, i * 0.1, {});
+    b.wireDavidSkull = (performance.now() - t0) / n;
+
+    // voodoo card
+    t0 = performance.now();
+    for (i = 0; i < n; i++) ART.voodooCard(g, 560, 240, 800, 660, i * 0.1, {});
+    b.voodooCard = (performance.now() - t0) / n;
+
+    // bsod
+    t0 = performance.now();
+    for (i = 0; i < 50; i++) ART.bsodCrop(g, 0, 0, 960, 700, { scale: 4, seed: i, t: i });
+    b.bsodCrop = (performance.now() - t0) / 50;
+
+    // ticker
+    t0 = performance.now();
+    for (i = 0; i < 50; i++) ART.stockTicker(g, 0, 0, 1920, 80, i * 0.1, 42, { scale: 3 });
+    b.stockTicker = (performance.now() - t0) / 50;
+
+    // neon
+    t0 = performance.now();
+    for (i = 0; i < 30; i++) ART.neonSign(g, 960, 540, 'OPEN 24H', 10, i * 0.1, {});
+    b.neonSign = (performance.now() - t0) / 30;
+
+    // big text
+    t0 = performance.now();
+    for (i = 0; i < 200; i++) ART.pixelText(g, 'THE PRINCESS IS A FILE.PNG', 100, 100, 4, '#fff');
+    b.pixelText39 = (performance.now() - t0) / 200;
+
+    for (var k in b) b[k] = Math.round(b[k] * 1000) / 1000;
+    return b;
+  }
+
+  window.__bench = bench;
+  window.__render = render;
+
+  // quick check that nothing got overridden
+  window.__check = function () {
+    var m = ART.art2Manifest;
+    return {
+      added: m.added,
+      missing: m.added.filter(function (k) { return typeof ART[k] !== 'function'; }),
+      coreIntact: ['icon', 'cursor', 'princess', 'coin', 'kline', 'piglet', 'clippy',
+        'pigSculpture', 'glitchSlab', 'wireGrid', 'sun', 'davidBust', 'hexDump',
+        'paintCanvasBg', 'ditherNoise'].filter(function (k) {
+          return typeof ART[k] !== 'function';
+        })
+    };
+  };
+
+  var params = new URLSearchParams(location.search);
+  var t = parseFloat(params.get('t') || '0');
+  var b = bench();
+  var perf = 'PERF  hand ' + b.princessHand + 'ms  skull ' + b.wireDavidSkull +
+    'ms  card ' + b.voodooCard + 'ms  ticker ' + b.stockTicker + 'ms  neon ' + b.neonSign + 'ms';
+  window.__PERF__ = perf;
+  console.log('[art2] ' + perf);
+  console.log('[art2] ' + JSON.stringify(b));
+  console.log('[art2] selfcheck ' + JSON.stringify(window.__check()));
+
+  render(t);
+  window.__READY__ = true;
+})();
+</script>
+</body>
+</html>

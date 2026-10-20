@@ -1,0 +1,141 @@
+/* ============================================================
+   base.css — 布局 / CRT / 全局效果（win98.css 负责组件皮肤）
+   尺寸同样按 2.0x 放大（任务栏 28->48，光标 32->48，扫描线 1/2 -> 2/4）
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+  font-family: 'Tahoma', 'MS Sans Serif', 'Fixedsys', 'Courier New', monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+#stage {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 1920px; height: 1080px;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  background: #008080;
+  contain: strict;
+}
+
+/* 抖动目标：JS 只在此层写入极小的 translate（<= 6px），不放其他 transform */
+#screen { position: absolute; inset: 0; will-change: transform; }
+
+.layer { position: absolute; inset: 0; }
+#world { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+#ghost { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: 6; pointer-events: none; }
+#fx    { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: 950; pointer-events: none; }
+/* 冲击层：爆炸/冲击波/裂纹/巨型字。在 #fx 之上、光标之下，
+   只画在 canvas 里，不会影响任何文字排版。 */
+#shock { position: absolute; inset: 0; width: 1920px; height: 1080px; z-index: 960; pointer-events: none; }
+#desktop { z-index: 5; }
+#scenes  { z-index: 10; }
+
+/* ---------- 像素鼠标（32px -> 48px） ---------- */
+#cursor {
+  position: absolute; left: 0; top: 0;
+  width: 48px; height: 48px;
+  z-index: 980;
+  pointer-events: none;
+  transform: translate3d(-100px, -100px, 0);
+  will-change: transform;
+}
+/* 32px 位图由 JS 直接绘入 48x48 画布（drawImage 0,0,48,48），
+   这里只按 1:1 显示，绝不能再二次放大 */
+#cursor canvas {
+  position: absolute; left: 0; top: 0;
+  width: 48px; height: 48px;
+  image-rendering: pixelated;
+}
+
+/* ---------- 任务栏（28px -> 48px） ---------- */
+#taskbar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 48px; z-index: 1000;
+  display: flex; align-items: center;
+  padding: 4px;
+  gap: 4px;
+}
+.taskbtns { display: flex; gap: 4px; flex: 1; overflow: hidden; height: 40px; }
+.tray { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; }
+.tray-icons { display: flex; gap: 6px; }
+
+/* ---------- CRT 滤镜 (2px 扫描线) ---------- */
+#crt {
+  position: absolute; inset: 0; z-index: 9990;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 2px, transparent 2px, transparent 4px);
+  mix-blend-mode: multiply;
+  opacity: .92;
+}
+#crtScan {
+  position: absolute; inset: 0; z-index: 9991;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 100% at 50% 50%, rgba(255,255,255,0.035) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.32) 100%);
+}
+#crtVignette {
+  position: absolute; inset: 0; z-index: 9992;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 88% 82% at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.30) 78%, rgba(0,0,0,0.72) 100%),
+    linear-gradient(90deg, rgba(255,0,80,0.05), rgba(0,255,255,0.05));
+}
+#flash {
+  position: absolute; inset: 0; z-index: 9993;
+  pointer-events: none; opacity: 0;
+  background: #fff;
+}
+
+/* ---------- 全屏覆写层 ---------- */
+#boot, #shutdown, #terminator {
+  position: absolute; inset: 0; pointer-events: none;
+}
+#boot { z-index: 9980; }
+#shutdown { z-index: 9985; }
+/* CRT 断电：水平亮线坍缩 + 白点 */
+#terminator {
+  z-index: 9995;
+  background: #000;
+  opacity: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+#terminator .term-line {
+  width: 100%; height: 100%;
+  background: #fff;
+  transform-origin: 50% 50%;
+}
+#terminator .term-dot {
+  position: absolute; left: 50%; top: 50%;
+  width: 600px; height: 600px; margin: -300px 0 0 -300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #cfe 40%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+}
+
+/* ---------- 全局状态钩子 ---------- */
+html[data-fps="1"] { --fps-step: 1; }
+
+/* 源码被删除后：赤裸 HTML */
+html[data-skin="stripped"] body { background: #fff; }
+html[data-skin="stripped"] #stage { background: #fff; }
+html[data-skin="stripped"] #crt,
+html[data-skin="stripped"] #crtScan { display: none; }
+html[data-skin="stripped"] .desk-icon__label { color: #000; text-shadow: none; }
+
+/* DOS 实模式 */
+#stage.dos-mode { background: #000; }
+#stage.dos-mode #crt { opacity: .55; }
+
+/* 屏幕抖动（低频冲击）；正式抖动落在 #screen 上 */
+.shake { will-change: transform; }

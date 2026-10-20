@@ -1,0 +1,187 @@
+/* ============================================================
+   subtitle.css — 固定置顶双语字幕条（Win95 经典灰白弹窗）
+   绝对静止：不参与抖动、碎裂、故障切片
+   ============================================================ */
+
+#subtitle {
+  position: absolute;
+  left: 50%;
+  /* 2x 化后任务栏为 48px，字幕条严格落在其正上方 */
+  bottom: 56px;
+  transform: translateX(-50%);
+  width: 84%;
+  max-width: 1180px;
+  z-index: 9000;
+  pointer-events: none;
+  will-change: auto;
+}
+
+.sub-outer {
+  background: #c0c0c0;
+  padding: 4px;
+  box-shadow:
+    inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+    inset -4px -4px #808080, inset 4px 4px #ffffff;
+}
+
+/* ---------- 标题栏 ---------- */
+.sub-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 6px;
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  color: #fff;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sub-tb-icon { font-size: 20px; flex: 0 0 auto; }
+.sub-tb-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 2px;
+}
+.sub-tb-btns { display: flex; gap: 3px; flex: 0 0 auto; }
+.sub-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  font-style: normal;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  background: #c0c0c0;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+              inset -3px -3px #808080, inset 3px 3px #ffffff;
+}
+
+/* ---------- 主显区 ---------- */
+.sub-main {
+  margin: 4px 2px 3px;
+  padding: 10px 12px 8px;
+  background: #000;
+  box-shadow: inset -2px -2px #ffffff, inset 2px 2px #808080,
+              inset -4px -4px #dfdfdf, inset 4px 4px #0a0a0a;
+  text-align: center;
+  overflow: hidden;
+}
+
+.sub-en {
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 1.22;
+  color: #00ffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.75), 0 0 22px rgba(0, 255, 255, 0.35);
+  min-height: 37px;
+}
+
+.sub-zh {
+  margin-top: 5px;
+  font-family: 'Tahoma', 'Microsoft YaHei', 'MS Sans Serif', sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1.26;
+  color: #ffff00;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.55);
+  min-height: 36px;
+}
+
+.sub-en.is-idle,
+.sub-zh.is-idle { opacity: 0.45; }
+
+/* ---------- 底部单行「潜台词」状态栏 ---------- */
+.sub-status {
+  display: flex;
+  gap: 3px;
+  margin: 0 2px 3px;
+}
+.sub-cell {
+  box-shadow: inset -2px -2px #ffffff, inset 2px 2px #808080;
+  padding: 7px 12px;
+  font-family: 'Tahoma', 'Microsoft YaHei', sans-serif;
+  font-size: 20px;
+  line-height: 1.3;
+  overflow: hidden;
+}
+
+/* 唯一保留的解释行 */
+.sub-cell--note {
+  flex: 1 1 100%;
+  min-width: 0;
+  background: #ffffe1;
+  color: #1a1a00;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+.sub-note-icon {
+  flex: 0 0 auto;
+  font-size: 21px;
+  line-height: 1;
+}
+.sub-note-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.sub-note-side {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 10px;
+  border-left: 2px solid #c0c0c0;
+}
+.sub-time {
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 18px;
+  color: #000080;
+  white-space: nowrap;
+}
+.sub-leds { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
+.sub-leds i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: #b0b0a0;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080;
+}
+.sub-leds i.on {
+  background: #00c000;
+  box-shadow: 0 0 6px rgba(0, 255, 70, 0.85);
+}
+.sub-leds i.on.hot {
+  background: #ffcc00;
+  box-shadow: 0 0 6px rgba(255, 200, 0, 0.9);
+}
+
+/* ---------- 底部播放进度（1px 蓝色细条，几乎不占空间） ---------- */
+.sub-prog {
+  height: 6px;
+  margin: 0 4px 2px;
+  background: #909090;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+  overflow: hidden;
+}
+.sub-prog-fill {
+  height: 100%;
+  width: 0;
+  background: #000080;
+}
+
+/* 第五幕：蓝屏时依然保持可读 */
+html[data-act="act5"] #subtitle .sub-main { background: #000; }

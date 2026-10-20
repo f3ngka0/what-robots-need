@@ -1,0 +1,823 @@
+/* ==========================================================================
+   win98.css — 正宗 Windows 98 SE 系统外观（1920x1080 像素级还原）
+   缩放：全量 2.0x（原 11px 系统字体 -> 22px）。为手机竖屏/小窗观看而放大，
+   所有倒角 1px/2px -> 2px/4px，保持 0 圆角 / 无平滑 / 无模糊的硬像素质感。
+   无圆角 · 无平滑 · 硬像素倒角 · 纯 CSS（无外链资源）
+   ========================================================================== */
+
+:root {
+  --grey: #c0c0c0;
+  --grey-dk: #808080;
+  --grey-lt: #dfdfdf;
+  --white: #ffffff;
+  --black: #0a0a0a;
+  --navy: #000080;
+  --navy-lt: #1084d0;
+  --desk: #008080;
+
+  --outset: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+            inset -4px -4px #808080, inset 4px 4px #ffffff;
+  --inset:  inset -2px -2px #ffffff, inset 2px 2px #808080,
+            inset -4px -4px #dfdfdf, inset 4px 4px #0a0a0a;
+  --outset-thin: inset -2px -2px #0a0a0a, inset 2px 2px #ffffff;
+  --inset-thin:  inset -2px -2px #ffffff, inset 2px 2px #808080;
+}
+
+html, body {
+  font-family: 'Tahoma', 'MS Sans Serif', 'Fixedsys', 'Courier New', monospace;
+  font-size: 22px;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+}
+
+/* ==========================================================================
+   1. 窗口外壳
+   ========================================================================== */
+.win98-window {
+  background: var(--grey);
+  padding: 6px;
+  box-shadow: var(--outset);
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  will-change: transform, opacity;
+}
+.win98-window > .win-body { flex: 1; min-height: 0; }
+.win98-window.is-active { z-index: 500; }
+
+/* ---- 高亮/聚光（JS 切换，其余组件一律无过渡） ----
+   注意：这里绝不能加 transition。渲染模式是「seek 到 t → 立刻截图」，
+   任何 CSS 过渡都会让截图拍在过渡中途，于是同一时刻的像素取决于
+   上一帧是什么状态（实测就是它导致了 seek 顺序依赖）。 */
+.win98-window.is-dimmed {
+  opacity: .30;
+  filter: brightness(.5) blur(2px);
+  transition: none;
+}
+.win98-window.is-focus { z-index: 500; }
+
+/* ---- 标题栏 ---- */
+.titlebar {
+  height: 38px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px 0 6px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 22px;
+  letter-spacing: 0;
+  user-select: none;
+  flex: 0 0 auto;
+}
+.titlebar--classic  { background: linear-gradient(90deg, #000080 0%, #1084d0 100%); }
+.titlebar--vapor    { background: linear-gradient(90deg, #ff00aa 0%, #00ffff 100%); color: #000; }
+.titlebar--alert    { background: linear-gradient(90deg, #800000 0%, #ff0000 100%); }
+.titlebar--inactive { background: linear-gradient(90deg, #808080 0%, #b5b5b5 100%); color: #dfdfdf; }
+.titlebar--black    { background: #000; color: #c0c0c0; }
+
+/* ==========================================================================
+   1b. 致命错误框（FATAL ERROR）—— 全场冲击力最强的窗
+   设计要点：
+     · 标题栏只放「系统报错码」，绝不放歌词（歌词会重复到正文）
+     · 正文里歌词是巨型字号，是画面的绝对主角
+     · 斜纹警示带 + 呼吸红光 + 角标，制造压迫感
+   ========================================================================== */
+.win98-window--fatal {
+  background: #1a0004;
+  padding: 8px;
+  box-shadow:
+    inset -2px -2px #000, inset 2px 2px #ff6a6a,
+    inset -4px -4px #400008, inset 4px 4px #ffb0b0,
+    0 0 0 4px #ff1a1a,
+    0 0 60px 18px rgba(255, 20, 20, 0.55),
+    0 0 160px 60px rgba(180, 0, 0, 0.30);
+  z-index: 130;
+}
+/* 外圈呼吸红光：靠 JS 逐帧改 opacity，不用 CSS 动画（渲染需确定性） */
+.win98-window--fatal::before {
+  content: '';
+  position: absolute; left: -14px; top: -14px; right: -14px; bottom: -14px;
+  border: 6px solid #ff2a2a;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 30px 8px rgba(255, 40, 40, 0.8);
+}
+
+.fatal-titlebar {
+  height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 0 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #ff1a1a 0px, #ff1a1a 18px,
+    #0a0002 18px, #0a0002 36px
+  );
+  color: #fff;
+  font-family: 'Tahoma', 'Microsoft YaHei', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+  letter-spacing: 2px;
+  flex: 0 0 auto;
+  border: 2px solid #000;
+}
+/* 标题文字压一层黑底，保证在斜纹上依然清晰 */
+.fatal-titlebar .fatal-code {
+  background: #0a0002;
+  padding: 2px 14px;
+  border: 2px solid #ff5a5a;
+  text-shadow: 0 0 12px rgba(255, 60, 60, 0.95), 2px 2px 0 #000;
+  white-space: nowrap;
+}
+.fatal-titlebar .fatal-x {
+  margin-left: auto;
+  background: #c0c0c0;
+  color: #000;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #ffffff,
+              inset -4px -4px #808080, inset 4px 4px #dfdfdf;
+}
+
+/* 严重级别条 */
+.fatal-sev {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 0;
+  padding: 5px 10px;
+  background: #ff1a1a;
+  color: #0a0002;
+  font: bold 22px 'Tahoma', 'Microsoft YaHei', sans-serif;
+  letter-spacing: 3px;
+  border: 2px solid #000;
+}
+.fatal-sev .sev-dots { display: flex; gap: 4px; margin-left: auto; }
+.fatal-sev .sev-dots i {
+  display: block; width: 16px; height: 16px;
+  background: #500;
+  box-shadow: inset -2px -2px #000, inset 2px 2px #ffb0b0;
+}
+.fatal-sev .sev-dots i.on { background: #ffe000; box-shadow: 0 0 10px #ffe000; }
+
+/* 正文：歌词是主角 */
+.fatal-body {
+  margin-top: 6px;
+  padding: 16px 18px;
+  background: #000;
+  border: 4px solid #ff2a2a;
+  box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.fatal-lyric {
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 52px;
+  font-weight: bold;
+  line-height: 1.14;
+  color: #ffffff;
+  text-shadow:
+    0 0 18px rgba(255, 40, 40, 0.95),
+    4px 4px 0 #8a0000,
+    -2px -2px 0 rgba(0, 255, 255, 0.35);
+  letter-spacing: 0;
+  word-break: break-word;
+  flex: 0 0 auto;
+}
+/* 中文翻译：第二主角 */
+.fatal-zh {
+  margin-top: 10px;
+  font-family: 'Tahoma', 'Microsoft YaHei', sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #ffe000;
+  text-shadow: 0 0 16px rgba(255, 200, 0, 0.75), 3px 3px 0 #6a0000;
+  flex: 0 0 auto;
+}
+/* 十六进制内存转储：把余下的版面填满，制造「系统真的在崩」的密度 */
+.fatal-dump {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 2px solid #5a0008;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 17px;
+  line-height: 1.32;
+  color: #ff6a6a;
+  letter-spacing: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  white-space: pre;
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.55);
+}
+.fatal-dump .dump-addr { color: #9a9aff; }
+.fatal-dump .dump-hot { color: #ffe000; text-shadow: 0 0 10px rgba(255,220,0,0.9); }
+/* 关键词：整句只留这一个词，是画面的主角 */
+.fatal-kw {
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 92px;
+  font-weight: bold;
+  line-height: 1.04;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow:
+    0 0 24px rgba(255, 40, 40, 0.95),
+    5px 5px 0 #8a0000,
+    -3px -3px 0 rgba(0, 255, 255, 0.35);
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.fatal-kwzh {
+  margin-top: 2px;
+  font-family: 'Tahoma', 'Microsoft YaHei', sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  color: #ffe000;
+  text-align: center;
+  text-shadow: 0 0 16px rgba(255, 200, 0, 0.75), 3px 3px 0 #6a0000;
+  flex: 0 0 auto;
+}
+
+/* 词义示意动画区 */
+.fatal-anim {
+  position: relative;
+  margin-top: 8px;
+  flex: 0 0 268px;
+  height: 268px;
+  background: #05000a;
+  border: 3px solid #ff2a2a;
+  box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.28);
+  overflow: hidden;
+}
+.fatal-anim canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.fatal-anim .anim-tag {
+  position: absolute;
+  left: 0; top: 0;
+  padding: 3px 12px;
+  background: rgba(255, 26, 26, 0.92);
+  color: #0a0002;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* 底部技术注脚，替代原来重复的正文 */
+.fatal-meta {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 2px dashed #8a0000;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #ff8a8a;
+  letter-spacing: 1px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.fatal-meta b { color: #ffe000; }
+.fatal-meta .meta-blink { color: #ff2a2a; font-weight: bold; }
+
+/* 按钮行：Yes / Yes 的荒诞感保留，但更粗壮 */
+.fatal-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.fatal-btns .btn98 {
+  min-width: 130px;
+  height: 52px;
+  font-size: 24px;
+  background: #d8d8d8;
+}
+
+.tb-icon {
+  width: 32px; height: 32px; flex: 0 0 32px;
+  display: inline-block;
+}
+.tb-icon canvas { width: 32px; height: 32px; display: block; image-rendering: pixelated; }
+
+.tb-title {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  padding-right: 8px;
+}
+.tb-btns { display: flex; gap: 4px; flex: 0 0 auto; }
+
+.tb-btn {
+  width: 32px; height: 28px;
+  padding: 0;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+  color: #000;
+  background: var(--grey);
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+              inset -4px -4px #808080, inset 4px 4px #ffffff;
+  cursor: default;
+  position: relative;
+}
+.tb-btn:active,
+.tb-btn.is-down {
+  box-shadow: inset 2px 2px #0a0a0a, inset -2px -2px #ffffff,
+              inset 4px 4px #808080, inset -4px -4px #dfdfdf;
+}
+.tb-btn:active { padding: 2px 0 0 2px; }
+.tb-close { font-size: 20px; }
+
+/* ==========================================================================
+   2. 菜单栏
+   ========================================================================== */
+.menubar {
+  display: flex;
+  gap: 0;
+  height: 38px;
+  align-items: center;
+  padding: 0 4px;
+  background: var(--grey);
+  flex: 0 0 auto;
+}
+.menu-item {
+  padding: 4px 14px;
+  font-size: 22px;
+  color: #000;
+  cursor: default;
+  line-height: 28px;
+}
+.menu-item:hover, .menu-item.is-open {
+  background: var(--navy);
+  color: #fff;
+}
+.menu-drop {
+  position: absolute;
+  background: var(--grey);
+  padding: 4px;
+  box-shadow: var(--outset), 4px 4px 0 #000;
+  z-index: 900;
+  min-width: 300px;
+}
+.menu-drop__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 44px;
+  padding: 6px 36px 6px 40px;
+  font-size: 22px;
+  white-space: nowrap;
+}
+.menu-drop__item:hover { background: var(--navy); color: #fff; }
+.menu-drop__sep { height: 4px; margin: 4px 2px; box-shadow: var(--inset-thin); }
+
+/* ==========================================================================
+   3. 按钮
+   ========================================================================== */
+.btn98 {
+  min-width: 150px;
+  height: 46px;
+  padding: 0 20px;
+  background: var(--grey);
+  color: #000;
+  border: 0;
+  border-radius: 0;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 22px;
+  line-height: 42px;
+  text-align: center;
+  cursor: default;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+              inset -4px -4px #808080, inset 4px 4px #ffffff;
+  position: relative;
+  outline: 0;
+}
+.btn98:active,
+.btn98.is-down {
+  box-shadow: inset 2px 2px #0a0a0a, inset -2px -2px #ffffff,
+              inset 4px 4px #808080, inset -4px -4px #dfdfdf;
+  padding: 2px 18px 0 22px;
+}
+.btn98--default,
+.btn98.btn-default {
+  outline: 2px solid #000;
+  outline-offset: -8px;
+}
+.btn98:focus { outline: 2px dotted #000; outline-offset: -10px; }
+.btn98[disabled] { color: var(--grey-dk); text-shadow: 2px 2px 0 #fff; }
+
+/* ==========================================================================
+   4. 输入 / 面板
+   ========================================================================== */
+.field {
+  background: #fff;
+  border: 0;
+  padding: 6px 8px;
+  font-family: 'Fixedsys', 'Courier New', monospace;
+  font-size: 24px;
+  color: #000;
+  box-shadow: var(--inset);
+  border-radius: 0;
+  outline: 0;
+}
+.panel-inset  { box-shadow: var(--inset);  background: #fff; padding: 4px; }
+.panel-outset { box-shadow: var(--outset); background: var(--grey); padding: 4px; }
+
+/* ---- 进度条（经典分段蓝块） ---- */
+.progress98 {
+  height: 36px;
+  background: var(--grey);
+  padding: 4px;
+  box-shadow: var(--inset);
+  overflow: hidden;
+  position: relative;
+}
+.progress98__fill {
+  height: 100%;
+  width: 0;
+  background:
+    repeating-linear-gradient(90deg,
+      #000080 0px, #000080 16px,
+      transparent 16px, transparent 20px),
+    #000080;
+  transition: none;
+}
+.progress98--seg .progress98__fill {
+  background: repeating-linear-gradient(90deg,
+    #000080 0px, #000080 18px, rgba(0,0,0,0) 18px, rgba(0,0,0,0) 22px);
+}
+
+/* ---- 滚动条 ---- */
+.scroll98 { overflow-y: scroll; }
+::-webkit-scrollbar { width: 32px; height: 32px; background: var(--grey); }
+::-webkit-scrollbar-track { background:
+  repeating-conic-gradient(#c0c0c0 0 25%, #ffffff 0 50%) 0 0/4px 4px; }
+::-webkit-scrollbar-thumb {
+  background: var(--grey);
+  box-shadow: var(--outset);
+}
+::-webkit-scrollbar-button:single-button {
+  background: var(--grey);
+  box-shadow: var(--outset);
+  height: 32px; width: 32px;
+}
+::-webkit-scrollbar-corner { background: var(--grey); }
+
+/* ==========================================================================
+   5. 状态栏
+   ========================================================================== */
+.statusbar {
+  display: flex;
+  gap: 4px;
+  height: 38px;
+  padding: 4px 0 0;
+  flex: 0 0 auto;
+}
+.status-cell {
+  box-shadow: inset -2px -2px #ffffff, inset 2px 2px #808080;
+  padding: 2px 10px;
+  font-size: 22px;
+  line-height: 26px;
+  color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+  /* 2.0x 后文字约需双倍宽度：按内容定基准再按比例伸展，
+     窄窗口（如 326px 的录音机）里也不会把 "0.00 sec." 截掉 */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.status-cell:nth-child(1) { flex: 3 1 auto; }
+
+/* ==========================================================================
+   6. 标签页
+   ========================================================================== */
+.tabs98 { display: flex; align-items: flex-end; padding: 0 4px; gap: 2px; }
+.tab98 {
+  padding: 6px 20px;
+  background: var(--grey);
+  box-shadow: inset -2px 0 #0a0a0a, inset 2px 2px #ffffff, inset -4px 0 #808080, inset 4px 4px #dfdfdf;
+  font-size: 22px;
+  margin-bottom: -6px;
+  position: relative;
+  z-index: 1;
+}
+.tab98.is-active { padding-bottom: 10px; z-index: 3; }
+
+/* ==========================================================================
+   7. 列表 / 树
+   ========================================================================== */
+.listview { background: #fff; height: 100%; overflow: hidden; padding: 2px; }
+.listview__row {
+  padding: 2px 8px;
+  font-size: 22px;
+  line-height: 30px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.listview__row.is-selected {
+  background: var(--navy);
+  color: #fff;
+  outline: 2px dotted #ffffff;
+  outline-offset: -4px;
+}
+.tree { font-size: 22px; line-height: 32px; }
+.tree__box {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid var(--grey-dk);
+  background: #fff;
+  text-align: center;
+  line-height: 14px;
+  font-size: 18px;
+  margin-right: 6px;
+  color: #000;
+}
+
+/* ---- 复选框 / 单选 ---- */
+.checkbox98, .radio98 {
+  display: inline-block;
+  width: 26px; height: 26px;
+  vertical-align: -4px;
+  background: #fff;
+  box-shadow: inset -2px -2px #ffffff, inset 2px 2px #808080,
+              inset -4px -4px #dfdfdf, inset 4px 4px #0a0a0a;
+  position: relative;
+  margin-right: 10px;
+}
+.checkbox98.is-on::after {
+  content: '';
+  position: absolute; left: 4px; top: 2px;
+  width: 18px; height: 14px;
+  border-left: 4px solid #000; border-bottom: 4px solid #000;
+  transform: rotate(-45deg);
+}
+.radio98 { border-radius: 50%; }
+.radio98.is-on::after {
+  content: '';
+  position: absolute; left: 6px; top: 6px;
+  width: 10px; height: 10px;
+  background: #000; border-radius: 50%;
+}
+
+/* ---- 提示气泡 ---- */
+.tooltip98 {
+  background: #ffffe1;
+  border: 2px solid #000;
+  padding: 4px 10px;
+  font-size: 22px;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* ---- 沙漏 / 地球 ---- */
+.spinner98 {
+  width: 32px; height: 32px;
+  display: inline-block;
+  background: #c0c0c0;
+  box-shadow: var(--inset-thin);
+  position: relative;
+  overflow: hidden;
+}
+.spinner98::after {
+  content: '';
+  position: absolute; inset: 4px;
+  background: linear-gradient(90deg, #000080 50%, #00ffff 50%);
+  animation: spin98 1s steps(6) infinite;
+}
+@keyframes spin98 {
+  0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   8. 桌面图标
+   ========================================================================== */
+.desk-icon {
+  position: absolute;
+  width: 156px;
+  text-align: center;
+  cursor: default;
+  z-index: 3;
+}
+.desk-icon__glyph {
+  width: 64px; height: 64px;
+  margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.desk-icon__glyph canvas { width: 64px; height: 64px; display: block; image-rendering: pixelated; }
+.desk-icon__label {
+  font-size: 22px;
+  line-height: 26px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -2px 0 0 #000, 0 -2px 0 #000, 2px 0 0 #000, 0 2px 0 #000;
+  padding: 2px 4px;
+  word-break: break-word;
+}
+.desk-icon.is-selected .desk-icon__label {
+  background: var(--navy);
+  text-shadow: none;
+}
+.desk-icon.is-selected .desk-icon__glyph {
+  filter: drop-shadow(0 0 0 #000080) brightness(0.75) saturate(1.4);
+}
+
+/* ==========================================================================
+   9. 任务栏
+   ========================================================================== */
+.taskbar {
+  background: var(--grey);
+  box-shadow: inset 0 2px #ffffff, inset 0 -2px #808080, 0 -2px 0 #0a0a0a;
+  font-size: 22px;
+}
+.start-btn {
+  height: 40px;
+  min-width: 136px;
+  padding: 0 16px 0 10px;
+  background: var(--grey);
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+              inset -4px -4px #808080, inset 4px 4px #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: #000;
+  display: flex; align-items: center; gap: 8px;
+  cursor: default;
+  flex: 0 0 auto;
+}
+.start-btn:active, .start-btn.is-open {
+  box-shadow: inset 2px 2px #0a0a0a, inset -2px -2px #ffffff,
+              inset 4px 4px #808080, inset -4px -4px #dfdfdf;
+  padding: 2px 14px 0 12px;
+}
+.start-flag {
+  font-size: 26px;
+  color: #c00000;
+  text-shadow: 2px 0 #000080, 0 2px #008000;
+  line-height: 1;
+}
+.taskbar-div {
+  width: 4px; height: 40px; flex: 0 0 4px; margin: 0 4px;
+  box-shadow: inset 2px 0 #808080, inset -2px 0 #ffffff;
+}
+.task-btn {
+  height: 40px;
+  max-width: 380px;
+  min-width: 200px;
+  padding: 0 12px;
+  background: var(--grey);
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset -2px -2px #0a0a0a, inset 2px 2px #dfdfdf,
+              inset -4px -4px #808080, inset 4px 4px #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 22px;
+  color: #000;
+  display: flex; align-items: center; gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: default;
+  flex: 0 1 auto;
+}
+.task-btn.is-active {
+  box-shadow: inset 2px 2px #0a0a0a, inset -2px -2px #ffffff,
+              inset 4px 4px #808080, inset -4px -4px #dfdfdf;
+  background: #b8b8b8;
+  font-weight: bold;
+  padding: 2px 10px 0 14px;
+}
+.task-btn-ico { width: 32px; height: 32px; flex: 0 0 32px; display: inline-block; }
+.task-btn-ico canvas { width: 32px; height: 32px; display: block; image-rendering: pixelated; }
+
+.tray {
+  background: var(--grey);
+  box-shadow: inset -2px -2px #ffffff, inset 2px 2px #808080;
+}
+.tray-clock {
+  font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+  font-size: 22px;
+  color: #000;
+  min-width: 116px;
+  text-align: center;
+  letter-spacing: 0;
+}
+.tray-icons canvas { width: 32px; height: 32px; display: block; image-rendering: pixelated; }
+
+/* ---- 开始菜单 ---- */
+.start-menu {
+  position: absolute;
+  left: 4px;
+  bottom: 48px;
+  z-index: 1100;
+  background: var(--grey);
+  padding: 4px;
+  box-shadow: var(--outset), 4px 4px 0 #000;
+  display: flex;
+  min-width: 420px;
+}
+.start-menu__banner {
+  width: 48px;
+  background: linear-gradient(180deg, #000080 0%, #1084d0 100%);
+  color: #c0c0c0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: bold 30px 'Tahoma', sans-serif;
+  letter-spacing: 2px;
+  padding: 16px 8px;
+  text-align: left;
+  flex: 0 0 48px;
+}
+.start-menu__banner b { color: #fff; }
+.start-menu__items { flex: 1; padding: 4px 0; }
+
+/* ==========================================================================
+   10. 特殊皮肤
+   ========================================================================== */
+/* --- DOS --- */
+.win98-window--dos .win-body { background: #000; padding: 4px; }
+.dos-text { color: #c0c0c0; }
+.dos-green { color: #00ff00; }
+.dos-amber { color: #ffb000; }
+
+/* --- BSOD --- */
+.win98-window--bsod {
+  position: absolute; inset: 0;
+  background: #0000aa;
+  box-shadow: none;
+  padding: 0;
+  color: #fff;
+}
+.bsod-title { background: #aaaaaa; color: #0000aa; }
+.bsod-text { color: #fff; }
+
+/* --- 对话框 / 向导 --- */
+.win98-window--dialog .win-body { padding: 0; }
+.win98-window--wizard .win-body { position: relative; }
+.win98-window--clippy { background: #ffffe1; box-shadow: var(--outset); }
+.clippy-bubble {
+  background: #ffffe1;
+  border: 2px solid #000;
+  padding: 12px 18px;
+  font-size: 22px;
+  line-height: 30px;
+  position: relative;
+}
+.clippy-bubble::after {
+  content: '';
+  position: absolute; left: -16px; bottom: 20px;
+  border: 8px solid transparent;
+  border-right-color: #000;
+}
+
+/* --- 垃圾广告弹窗 --- */
+.win98-window--popup { background: #ffee00; box-shadow: var(--outset), 0 0 0 4px #ff0000; }
+.win98-window--popup .win-body { background: #ff00aa; color: #fff; }
+
+/* --- 残影 --- */
+.is-ghost {
+  background: transparent;
+  box-shadow: none;
+  filter: grayscale(1) contrast(0.6) brightness(1.15);
+  opacity: .35;
+}
+
+/* ==========================================================================
+   11. 主题开关（JS 单行切换）
+   ========================================================================== */
+/* 蒸汽波氛围：标题栏偏色 */
+html[data-mood="vapor"] .win98-window { outline: 2px solid rgba(255,0,170,0.35); }
+html[data-mood="vapor"] .menu-item:hover { background: #800080; }
+html[data-mood="crash"] .titlebar--classic {
+  background: linear-gradient(90deg, #800000 0%, #ff0000 100%);
+}
+
+/* ==========================================================================
+   12. 跨文件文本尺寸兜底（与 scenes.css 的 2.0x 目标值一致）
+   scenes.css 在本文件之后加载，若其规则已按 2.0x 更新则数值相同、无副作用；
+   若尚未更新，这里保证正文类仍可读。选择器仅多一个皮肤前缀，不碰 stripped。
+   ========================================================================== */
+.win98-window--notepad .notepad-text { font-size: 28px; line-height: 40px; }
+.win98-window--source .source-text   { font-size: 24px; line-height: 30px; }
+.win98-window--dos .dos-text         { font-size: 24px; line-height: 26px; }
