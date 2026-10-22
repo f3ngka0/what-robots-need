@@ -36,7 +36,7 @@ node tools/fast-record.mjs --from 0 --to 249 --fps 60 --workers 3 --out frames
 node tools/encode.mjs --frames frames --from 0 --to 249 --fps 60 --crf 19 --name WHAT_ROBOTS_NEED_win98_mv --out out
 ```
 
-提示词：
+## 提示词：
 
 你是一位顶尖的创意技术专家（Creative Technologist）、千禧年复古蒸汽波（Y2K Vaporwave）视觉导演与资深前端黑客。 当前工作区目录下已经存放了歌曲 WHAT ROBOTS NEED 的音频文件（.mp3）与歌词时间轴文件（.lrc）。 你的任务是从零编写一个能够全屏自动演绎的“Win98 蒸汽波桌面劫持与赛博殉道 MV”前端单页工程。 观众看到的不是平庸的歌词播放器，而是一台运行着魔改版 Windows 98 的 CRT 显示器：从开屏暗黑 BIOS 尸检、凌晨三点画图板爆肝，到遭遇算力女巫外挂入侵、四向资本弹窗疯狂物理挤压人类生存空间，最终通过 FORMAT C: 与 DOS 字符瀑布下坠，将网页自身的真实源代码彻底物理格式化自杀。
 在编写 UI 前，必须先完整扫描并读取工作区内的 .lrc 歌词文件，解析出每一句歌词的精确时间戳（分、秒、毫秒转换为浮点秒数）。 在全局建立高精度状态机，将其与 audio.currentTime 及 requestAnimationFrame 严格绑定，将歌词与后文的各幕剧情节点精准对齐。 严禁在屏幕底部放普通的滚动字幕。所有歌词与潜台词必须由专用的 Win95 字幕解码器弹窗、记事本输入、终端报错与系统弹窗来呈现。
